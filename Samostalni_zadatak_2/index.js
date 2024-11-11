@@ -1,31 +1,15 @@
-const express = require("express");
-const path = require("path");
+import express from 'express';
+import nekretnine_ruter from './routes/nekretnine.js';
+import ponude_ruter from './routes/ponude.js';
 
-const useri = [
-  { ime: "Mateo", prezime: "Udovicic" },
-  { ime: "Pero", prezime: "Peric" },
-  { ime: "Ante", prezime: "Anic" },
-];
-
-let app = express();
+const app = express();
 const PORT = 3000;
 
-app.get("/", (req, res) => {
-  res.sendFile(__dirname + "/public/index.html");
-});
+app.use(express.json());
 
-app.get("/about", (req, res) => {
-  res.sendFile(__dirname + "/public/about.html");
-});
+app.use('/nekretnine', nekretnine_ruter);
+app.use('/ponude', ponude_ruter);
 
-app.get("/users", (req, res) => {
-  res.json(useri);
-});
-
-app.listen(PORT, (error) => {
-  if (error) {
-    console.error(error);
-  } else {
-    console.log("Slušam na portu:", PORT);
-  }
+app.listen(PORT, () => {
+  console.log(`Server radi na portu ${PORT}`);
 });
