@@ -1,12 +1,16 @@
 import express from "express";
-import nekretnine from "./nekretnine.js";
+import {nekretnine} from "./nekretnine.js";
 const router = express.Router();
 
 let ponude = [];
 let ponuda_id = 1;
 
+router.get("/", (req, res) => {
+  res.json(ponude);
+});
+
+
 router.post("/", (req, res) => {
-  res.json(nekretnine)
   const { nekretnina_id, ime, prezime, ponudjena_cijena, broj_telefona } =
     req.body;
   if (!nekretnina_id || !ime || !prezime || !ponudjena_cijena || !broj_telefona) {

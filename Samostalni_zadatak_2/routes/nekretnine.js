@@ -1,7 +1,17 @@
 import express from "express";
 const router = express.Router();
 
-let nekretnine = [];
+let nekretnine = [
+  {
+    id:1,
+    naziv:"prva",
+    opis:"prvu opis",
+    cijena:31213,
+    lokacija:"Pula",
+    broj_soba:3,
+    povrsina:56,
+  }
+];
 
 router.get("/", (req, res) => {
   res.json(nekretnine);
@@ -48,7 +58,7 @@ router.put("/:id", (req, res) => {
   if (!naziv || cijena < 0 || broj_soba < 0 || povrsina < 0) {
     return res
       .status(400)
-      .json({ poruka: "Podaci su nepotpuni ili neispravni" });
+      .json({ poruka: "Unesite naziv, opis, cijena, lokacija, broj soba i povrsinu" });
   }
 
   nekretnine[index] = {
@@ -65,25 +75,14 @@ router.put("/:id", (req, res) => {
 
 router.patch("/:id", (req, res) => {
   const id = parseInt(req.params.id);
+  const index = nekretnine.findIndex((n) => n.id === id);
   const nekretnina = nekretnine.find((n) => n.id === id);
   if (!nekretnina)
-    return res.status(404).json({ poruka: "Nekretnina nije pronađena" });
+    return res.status(404).json({ poruka: "Nema te nekretnine" });
 
-  const { naziv, opis, cijena, lokacija, broj_soba, povrsina } = req.body;
-  if (cijena < 0 || broj_soba < 0 || povrsina < 0) {
-    return res.status(400).json({
-      poruka: "Cijena, broja soba i povrsina nekretnina moraju biti pozitivne",
-    });
-  }
+  const cijena = 87655;
 
-  Object.assign(nekretnina, {
-    naziv,
-    opis,
-    cijena,
-    lokacija,
-    broj_soba,
-    povrsina,
-  });
+  nekretnine[index].cijena=cijena
   res.json(nekretnina);
 });
 
@@ -91,10 +90,10 @@ router.delete("/:id", (req, res) => {
   const id = parseInt(req.params.id);
   const index = nekretnine.findIndex((n) => n.id === id);
   if (index === -1)
-    return res.status(404).json({ poruka: "Nekretnina nije pronađena" });
+    return res.status(404).json({ poruka: "Nema te nekretnine" });
 
   nekretnine.splice(index, 1);
   res.status(204).end();
 });
 
-export default router;
+export { router as default, nekretnine };
