@@ -23,13 +23,18 @@ class Narudzba {
     { id: 3, velicina: 'onesize', narucena_kolicina: 1 }
   ]);
 
-router.post("/", (req,res) => {
+  router.post('/', (req, res) => {
     let podaci = req.body;
-
-    console.log('podaci:', podaci);
-
-    res.status(201).json({message: 'Dodana narudzba'});
-})
+    let naruceni_proizvodi = podaci.naruceni_proizvodi;
+  
+    let id_nove_narudzbe = narduzbe.length ? narduzbe.at(-1).id + 1 : 1;
+  
+    const narudzba_obj = new Narudzba(id_nove_narudzbe, naruceni_proizvodi);
+  
+    narduzbe.push(narudzba_obj);
+  
+    res.status(201).json({ message: 'Dodana narudžba' });
+  });
 
 router.get("/", (req, res) => {
     res.status(200).json(narudzbe);
