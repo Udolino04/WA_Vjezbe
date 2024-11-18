@@ -1,13 +1,23 @@
 <script setup>
+import { onMounted } from 'vue';
+import { ref } from "vue";
 import axios from "axios";
-axios
-  .get("http://localhost:3000/proizvodi")
-  .then((response) => {
-    console.log(response.data);
-  })
-  .catch((error) => {
-    console.error("Greška u dohvatu podataka:", error);
-  });
+
+let proizvod = ref({
+  id : 0,
+  naziv: '',
+  cijena: 0,
+  velicina: []
+});
+
+onMounted(async () => {
+  try {
+    const response = await axios.get("http://localhost:3000/proizvodi/1");
+    proizvod.value = response.data;
+  } catch (error) {
+    console.error("Greška u dohvatu podataka: ", error);
+  }
+});
 </script>
 
 <template>
@@ -41,7 +51,7 @@ axios
               href="#"
               aria-current="page"
               class="font-medium text-gray-500 hover:text-gray-600"
-              >Naslov proizvoda</a
+              >{{ proizvod.naziv }}</a
             >
           </li>
         </ol>
@@ -54,7 +64,7 @@ axios
           class="aspect-h-4 aspect-w-3 hidden overflow-hidden rounded-lg lg:block"
         >
           <img
-            src="https://placehold.co/300x400"
+            :src="proizvod.slike[0]"
             alt="Two each of gray, white, and black shirts laying flat."
             class="h-full w-full object-cover object-center"
           />
@@ -62,14 +72,14 @@ axios
         <div class="hidden lg:grid lg:grid-cols-1 lg:gap-y-8">
           <div class="aspect-h-2 aspect-w-3 overflow-hidden rounded-lg">
             <img
-              src="https://placehold.co/600x300"
+              :src="proizvod.slike[1]"
               alt="illo inventore veritatis et quasi architecto beatae vitae"
               class="h-full w-full object-cover object-center"
             />
           </div>
           <div class="aspect-h-2 aspect-w-3 overflow-hidden rounded-lg">
             <img
-              src="https://placehold.co/400x400"
+              :src="proizvod.slike[2]"
               alt="accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab"
               class="h-full w-full object-cover object-center"
             />
@@ -77,7 +87,7 @@ axios
         </div>
         <div class="aspect-h-2 aspect-w-3 overflow-hidden rounded-lg">
           <img
-            src="https://placehold.co/300x400"
+            :src="proizvod.slike[3]"
             alt="Sed ut perspiciatis unde omnis iste natus error sit voluptatem"
             class="h-full w-full object-cover object-center"
           />
@@ -91,13 +101,13 @@ axios
           <h1
             class="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl"
           >
-            Naslov proizvoda
+            {{ proizvod.naslov }}
           </h1>
         </div>
 
         <div class="mt-4 lg:row-span-3 lg:mt-0">
-          <h2 class="sr-only">Product information</h2>
-          <p class="text-3xl tracking-tight text-gray-900">100€</p>
+          <h2 class="sr-only">{{ proizvod.opis }}</h2>
+          <p class="text-3xl tracking-tight text-gray-900">{{ proizvod.cijena }}$</p>
 
           <form class="mt-10">
             <div>
@@ -165,6 +175,7 @@ axios
                 <div
                   class="grid grid-cols-4 gap-4 sm:grid-cols-8 lg:grid-cols-4"
                 >
+                <div v-for="velicina in proizvod.velicine" :key = "velicina">
                   <label
                     class="group relative flex cursor-not-allowed items-center justify-center rounded-md border bg-gray-50 px-4 py-3 text-sm font-medium uppercase text-gray-200 hover:bg-gray-50 focus:outline-none sm:flex-1 sm:py-6"
                   >
@@ -175,7 +186,7 @@ axios
                       disabled
                       class="sr-only"
                     />
-                    <span>_</span>
+                    <span>{{  }}</span>
                     <span
                       aria-hidden="true"
                       class="pointer-events-none absolute -inset-px rounded-md border-2 border-gray-200"
@@ -196,6 +207,7 @@ axios
                       </svg>
                     </span>
                   </label>
+                </div>
                   <label
                     class="group relative flex cursor-pointer items-center justify-center rounded-md border bg-white px-4 py-3 text-sm font-medium uppercase text-gray-900 shadow-sm hover:bg-gray-50 focus:outline-none sm:flex-1 sm:py-6"
                   >
