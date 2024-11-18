@@ -14,5 +14,5 @@ const proizvodi = [
   new Proizvod(4, "Čarape Adidas", 20, ["34-36", "37-39", "40-42"]),
   new Proizvod(5, "Tenisice Nike", 200, ["38","39","40","41","42","43","44","45",]),
 ];
-
+ 
 export { Proizvod, proizvodi };
