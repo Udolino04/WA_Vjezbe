@@ -1,25 +1,30 @@
 <script setup>
-import { onMounted } from 'vue';
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import axios from "axios";
+import { useRoute, useRouter } from "vue-router";
 
 let proizvod = ref({
-  id : 0,
-  naziv: '',
+  id: 0,
+  naziv: "",
   cijena: 0,
-  velicina: []
+  velicina: [],
+  opis: "",
+  slike: [],
 });
+
+const route = useRoute();
+const router = useRouter();
 
 onMounted(async () => {
   try {
-    const response = await axios.get("http://localhost:3000/proizvodi/1");
+    const id = route.params.id;
+    const response = await axios.get(`http://localhost:3000/proizvodi/${id}`);
     proizvod.value = response.data;
   } catch (error) {
     console.error("Greška u dohvatu podataka: ", error);
   }
 });
 </script>
-
 <template>
   <div class="bg-white">
     <div class="pt-6">
@@ -107,7 +112,9 @@ onMounted(async () => {
 
         <div class="mt-4 lg:row-span-3 lg:mt-0">
           <h2 class="sr-only">{{ proizvod.opis }}</h2>
-          <p class="text-3xl tracking-tight text-gray-900">{{ proizvod.cijena }}$</p>
+          <p class="text-3xl tracking-tight text-gray-900">
+            {{ proizvod.cijena }}$
+          </p>
 
           <form class="mt-10">
             <div>
@@ -175,39 +182,39 @@ onMounted(async () => {
                 <div
                   class="grid grid-cols-4 gap-4 sm:grid-cols-8 lg:grid-cols-4"
                 >
-                <div v-for="velicina in proizvod.velicine" :key = "velicina">
-                  <label
-                    class="group relative flex cursor-not-allowed items-center justify-center rounded-md border bg-gray-50 px-4 py-3 text-sm font-medium uppercase text-gray-200 hover:bg-gray-50 focus:outline-none sm:flex-1 sm:py-6"
-                  >
-                    <input
-                      type="radio"
-                      name="size-choice"
-                      value="_"
-                      disabled
-                      class="sr-only"
-                    />
-                    <span>{{  }}</span>
-                    <span
-                      aria-hidden="true"
-                      class="pointer-events-none absolute -inset-px rounded-md border-2 border-gray-200"
+                  <div v-for="velicina in proizvod.velicine" :key="velicina">
+                    <label
+                      class="group relative flex cursor-not-allowed items-center justify-center rounded-md border bg-gray-50 px-4 py-3 text-sm font-medium uppercase text-gray-200 hover:bg-gray-50 focus:outline-none sm:flex-1 sm:py-6"
                     >
-                      <svg
-                        class="absolute inset-0 h-full w-full stroke-2 text-gray-200"
-                        viewBox="0 0 100 100"
-                        preserveAspectRatio="none"
-                        stroke="currentColor"
+                      <input
+                        type="radio"
+                        name="size-choice"
+                        value="_"
+                        disabled
+                        class="sr-only"
+                      />
+                      <span>{{}}</span>
+                      <span
+                        aria-hidden="true"
+                        class="pointer-events-none absolute -inset-px rounded-md border-2 border-gray-200"
                       >
-                        <line
-                          x1="0"
-                          y1="100"
-                          x2="100"
-                          y2="0"
-                          vector-effect="non-scaling-stroke"
-                        />
-                      </svg>
-                    </span>
-                  </label>
-                </div>
+                        <svg
+                          class="absolute inset-0 h-full w-full stroke-2 text-gray-200"
+                          viewBox="0 0 100 100"
+                          preserveAspectRatio="none"
+                          stroke="currentColor"
+                        >
+                          <line
+                            x1="0"
+                            y1="100"
+                            x2="100"
+                            y2="0"
+                            vector-effect="non-scaling-stroke"
+                          />
+                        </svg>
+                      </span>
+                    </label>
+                  </div>
                   <label
                     class="group relative flex cursor-pointer items-center justify-center rounded-md border bg-white px-4 py-3 text-sm font-medium uppercase text-gray-900 shadow-sm hover:bg-gray-50 focus:outline-none sm:flex-1 sm:py-6"
                   >
