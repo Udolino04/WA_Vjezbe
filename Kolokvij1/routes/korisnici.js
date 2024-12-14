@@ -46,7 +46,7 @@ router.post("/korisnici", async (req, res) => {
   let korisnik = req.body;
   let atributi = ["id", "ime", "prezime"];
 
-  for (let a of atributi) {
+  for (let a of korisnik) {
     if (!Object.keys(korisnik).includes(a)) {
       res.status(400).send("Greska nema atributa " + a);
       return;
