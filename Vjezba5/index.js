@@ -1,8 +1,10 @@
 import express from "express";
 import { connectToDatabase } from "./db.js";
 import { ObjectId } from "mongodb";
+import cors from "cors";
 
 const app = express();
+app.use(cors());
 app.use(express.json());
 let db = await connectToDatabase();
 
@@ -14,8 +16,20 @@ app.get("/", (req, res) => {
 
 app.get("/pizze", async (req, res) => {
   let pizze_collection = db.collection("pizze");
-  let allPizze = await pizze_collection.find().toArray();
-  res.status(200).json(allPizze);
+  let cijena_query = req.query.cijena;
+  if (!cijena_query) {
+    let pizze = await pizze_collection.find().toArray();
+    return res.status(200).json(pizze);
+  }
+  try {
+    let pizze = await pizze_collection
+      .find({ cijena: Number(cijena_query) })
+      .toArray();
+    res.status(200).json(pizze);
+  } catch (error) {
+    console.log(error.errorResponse);
+    res.status(400).json({ error: error.errorResponse });
+  }
 });
 
 app.get("/pizze/:naziv", async (req, res) => {
@@ -86,6 +100,24 @@ app.post("/narudzbe", async (req, res) => {
   try {
     let result = await narudzbe_collection.insertOne(novaNarudzba);
     res.status(201).json({ insertedId: result.insertedId });
+  } catch (error) {
+    console.log(error.errorResponse);
+    res.status(400).json({ error: error.errorResponse });
+  }
+});
+
+app.patch("/pizze", async (req, res) => {
+  let pizze_collection = db.collection("pizze");
+  try {
+    let result = await pizze_collection.updateMany(
+      { cijena: { $lt: 15 } },
+      {
+        $inc: {
+          cijena: 2,
+        },
+      }
+    );
+    res.status(200).json({ modifiedCount: result.modifiedCount });
   } catch (error) {
     console.log(error.errorResponse);
     res.status(400).json({ error: error.errorResponse });
